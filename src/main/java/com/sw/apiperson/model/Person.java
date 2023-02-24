@@ -2,16 +2,20 @@ package com.sw.apiperson.model;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Data
 @Entity
 @AllArgsConstructor
+@NoArgsConstructor
 public class Person {
 
 	@Id
@@ -27,23 +31,5 @@ public class Person {
 	@OneToMany(mappedBy = "person", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private List<Address> adresses;
 
-	public Person(String name, LocalDate birthDate) {
-		this.name = name;
-		this.birthDate = birthDate;
-		this.adresses = new ArrayList<>();
-	}
 
-	public Person() {
-		super();
-		this.adresses = new ArrayList<Address>();
-	}
-
-	public Person(String name) {
-		this.name = name;
-	}
-
-	public void addAdresses(Address address) {
-		address.setPerson(this);
-		this.adresses.add(address);
-	}
 }
