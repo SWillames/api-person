@@ -9,5 +9,7 @@ import java.time.LocalDate;
 @Repository
 public interface PersonRepository extends JpaRepository<Person, Long> {
 
-	Person findByNameAndBirthDate(String s, LocalDate birthDate);
+	Person findByNameAndBirthDate(String name, LocalDate birthDate);
+	Person findByName(String name);
+
 }
