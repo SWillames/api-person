@@ -1,6 +1,7 @@
 package com.sw.apiperson.service.person.impl;
 
 import com.sw.apiperson.dto.PersonDTO;
+import com.sw.apiperson.exceptions.PersonNotFoundException;
 import com.sw.apiperson.model.Person;
 import com.sw.apiperson.repository.PersonRepository;
 import com.sw.apiperson.service.person.PersonServiceInterface;
@@ -27,8 +28,9 @@ public class PersonServiceImpl implements PersonServiceInterface {
 	}
 
 	@Override
-	public PersonDTO findByName(String name) {
-		Person foundPerson = personRepository.findByName(name);
+	public PersonDTO findByName(String name) throws PersonNotFoundException {
+		Person foundPerson = personRepository.findByName(name).
+					orElseThrow(() -> new PersonNotFoundException(name));
 		return mapper.map(foundPerson, PersonDTO.class);
 	}
 
@@ -46,10 +48,16 @@ public class PersonServiceImpl implements PersonServiceInterface {
 	}
 
 	@Override
-	public void deletePersonById(Long id) {
-		personRepository.findById(id);
+	public void deletePersonById(Long id) throws PersonNotFoundException {
+		verifyIfExists(id);
 		personRepository.deleteById(id);
 	}
+
+	private Person verifyIfExists(Long id) throws PersonNotFoundException {
+		return personRepository.findById(id)
+					.orElseThrow(() -> new PersonNotFoundException(id));
+	}
+
 
 
 

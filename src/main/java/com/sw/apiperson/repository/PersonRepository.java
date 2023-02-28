@@ -5,11 +5,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Repository
 public interface PersonRepository extends JpaRepository<Person, Long> {
 
 	Person findByNameAndBirthDate(String name, LocalDate birthDate);
-	Person findByName(String name);
+	Optional<Person> findByName(String name);
 
 }

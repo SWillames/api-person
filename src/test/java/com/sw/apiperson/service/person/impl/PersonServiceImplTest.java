@@ -3,6 +3,7 @@ package com.sw.apiperson.service.person.impl;
 import br.com.six2six.fixturefactory.Fixture;
 import br.com.six2six.fixturefactory.loader.FixtureFactoryLoader;
 import com.sw.apiperson.dto.PersonDTO;
+import com.sw.apiperson.exceptions.PersonNotFoundException;
 import com.sw.apiperson.model.Person;
 import com.sw.apiperson.repository.PersonRepository;
 import org.junit.jupiter.api.BeforeAll;
@@ -61,12 +62,12 @@ public class PersonServiceImplTest {
 
 	@Test
 	@DisplayName("When valid person name is given then return a person")
-	void getPersonByName()  {
+	void getPersonByName() throws PersonNotFoundException {
 
 		PersonDTO expectedFoundPersonDTO = Fixture.from(PersonDTO.class).gimme("valid");
 		Person expectedFoundPerson = mapper.map(expectedFoundPersonDTO, Person.class);
 
-		when(personRepository.findByName(expectedFoundPerson.getName())).thenReturn(expectedFoundPerson);
+		when(personRepository.findByName(expectedFoundPerson.getName())).thenReturn(Optional.of(expectedFoundPerson));
 
 		PersonDTO foundPersonDTO = personService.findByName(expectedFoundPersonDTO.getName());
 
@@ -101,7 +102,7 @@ public class PersonServiceImplTest {
 
 	@Test
 	@DisplayName("When exclusion is called with valid id then a person should be deleted")
-	void whenExclusionIsCalledWithValidIdThenAPersonShouldBeDeleted() {
+	void whenExclusionIsCalledWithValidIdThenAPersonShouldBeDeleted() throws PersonNotFoundException {
 
 		PersonDTO expectedDeletedPersonDTO = Fixture.from(PersonDTO.class).gimme("valid");
 		Person expectedDeletedPerson = mapper.map(expectedDeletedPersonDTO, Person.class);
@@ -109,7 +110,7 @@ public class PersonServiceImplTest {
 		when(personRepository.findById(expectedDeletedPersonDTO.getId())).thenReturn(Optional.of(expectedDeletedPerson));
 		doNothing().when(personRepository).deleteById(expectedDeletedPersonDTO.getId());
 
-		personService.deletePersonById(expectedDeletedPersonDTO.getId());
+		personService.deletePersonById(expectedDeletedPersonDTO.getId()) ;
 
 		verify(personRepository, times(1)).findById(expectedDeletedPersonDTO.getId());
 		verify(personRepository, times(1)).deleteById(expectedDeletedPersonDTO.getId());
